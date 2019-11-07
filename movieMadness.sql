@@ -8,19 +8,19 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- Schema mydb
 -- -----------------------------------------------------
 -- -----------------------------------------------------
--- Schema moviesite
+-- Schema moviemadness
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema moviesite
+-- Schema moviemadness
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `moviesite` DEFAULT CHARACTER SET utf8 ;
-USE `moviesite` ;
+CREATE SCHEMA IF NOT EXISTS `moviemadness` DEFAULT CHARACTER SET utf8 ;
+USE `moviemadness` ;
 
 -- -----------------------------------------------------
--- Table `moviesite`.`billingaddress`
+-- Table `moviemadness`.`billingaddress`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`billingaddress` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`billingaddress` (
   `BILLING_ID` INT(11) NOT NULL,
   `ADDRESS_1` VARCHAR(100) NOT NULL,
   `ADDRESS_2` VARCHAR(100) NULL DEFAULT NULL,
@@ -35,9 +35,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `moviesite`.`mailingaddress`
+-- Table `moviemadness`.`mailingaddress`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`mailingaddress` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`mailingaddress` (
   `MAILING_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `ADDRESS_1` VARCHAR(100) NOT NULL,
   `ADDRESS_2` VARCHAR(100) NULL DEFAULT NULL,
@@ -52,13 +52,16 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `moviesite`.`movie`
+-- Table `moviemadness`.`movie`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`movie` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`movie` (
   `MOVIE_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `NAME` VARCHAR(20) NOT NULL,
   `PURCHASE_PRICE` FLOAT NOT NULL,
   `RENT_PRICE` FLOAT NOT NULL,
+  `GENRE` VARCHAR(25) NOT NULL,
+  `SUMMARY` TEXT NOT NULL,
+  `IMAGE_URI` VARCHAR(100) NULL DEFAULT NULL,
   PRIMARY KEY (`MOVIE_ID`),
   UNIQUE INDEX `NAME_UNIQUE` (`NAME`))
 ENGINE = InnoDB
@@ -66,9 +69,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `moviesite`.`payment`
+-- Table `moviemadness`.`payment`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`payment` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`payment` (
   `CARD_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `CARD_NUMBER` VARCHAR(16) NOT NULL,
   `EXPIRATION` DATE NOT NULL,
@@ -79,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `moviesite`.`payment` (
   INDEX `Billing_Address_idx` (`BILLING_ADDRESS`),
   CONSTRAINT `Billing_Address`
     FOREIGN KEY (`BILLING_ADDRESS`)
-    REFERENCES `moviesite`.`billingaddress` (`BILLING_ID`)
+    REFERENCES `moviemadness`.`billingaddress` (`BILLING_ID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -87,15 +90,16 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `moviesite`.`user`
+-- Table `moviemadness`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`user` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`user` (
   `USER_ID` INT(11) NOT NULL AUTO_INCREMENT,
+  `FIRSTNAME` VARCHAR(50) NOT NULL,
+  `LASTNAME` VARCHAR(50) NOT NULL,
   `USERNAME` VARCHAR(45) NOT NULL,
   `EMAIL` VARCHAR(100) NULL DEFAULT NULL,
   `CARD_ID` INT(11) NULL DEFAULT NULL,
   `MAILING_ADD` INT(11) NULL DEFAULT NULL,
-  `BILLING_ADD` INT(11) NULL DEFAULT NULL,
   `PASSWORD` VARCHAR(64) NOT NULL,
   PRIMARY KEY (`USER_ID`),
   UNIQUE INDEX `EMAIL_UNIQUE` (`EMAIL`),
@@ -103,12 +107,12 @@ CREATE TABLE IF NOT EXISTS `moviesite`.`user` (
   INDEX `Mailing_idx` (`MAILING_ADD`),
   CONSTRAINT `Card_Info`
     FOREIGN KEY (`CARD_ID`)
-    REFERENCES `moviesite`.`payment` (`CARD_ID`)
+    REFERENCES `moviemadness`.`payment` (`CARD_ID`)
     ON DELETE SET NULL
     ON UPDATE NO ACTION,
   CONSTRAINT `Mailing`
     FOREIGN KEY (`MAILING_ADD`)
-    REFERENCES `moviesite`.`mailingaddress` (`MAILING_ID`)
+    REFERENCES `moviemadness`.`mailingaddress` (`MAILING_ID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
@@ -116,9 +120,9 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `moviesite`.`user_movie`
+-- Table `moviemadness`.`user_movie`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `moviesite`.`user_movie` (
+CREATE TABLE IF NOT EXISTS `moviemadness`.`user_movie` (
   `USER_MOVIE_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `USER_ID` INT(11) NOT NULL,
   `MOVIE_ID` INT(11) NOT NULL,
@@ -127,12 +131,12 @@ CREATE TABLE IF NOT EXISTS `moviesite`.`user_movie` (
   INDEX `MovieId_idx` (`MOVIE_ID`),
   CONSTRAINT `MovieId`
     FOREIGN KEY (`MOVIE_ID`)
-    REFERENCES `moviesite`.`movie` (`MOVIE_ID`)
+    REFERENCES `moviemadness`.`movie` (`MOVIE_ID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION,
   CONSTRAINT `UserId`
     FOREIGN KEY (`USER_ID`)
-    REFERENCES `moviesite`.`user` (`USER_ID`)
+    REFERENCES `moviemadness`.`user` (`USER_ID`)
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
