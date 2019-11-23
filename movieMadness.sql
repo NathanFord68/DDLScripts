@@ -14,6 +14,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema moviemadness
 -- -----------------------------------------------------
+DROP SCHEMA IF EXISTS `moviemadness`;
 CREATE SCHEMA IF NOT EXISTS `moviemadness` DEFAULT CHARACTER SET utf8 ;
 USE `moviemadness` ;
 
@@ -21,7 +22,7 @@ USE `moviemadness` ;
 -- Table `moviemadness`.`billingaddress`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `moviemadness`.`billingaddress` (
-  `BILLING_ID` INT(11) NOT NULL,
+  `BILLING_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `ADDRESS_1` VARCHAR(100) NOT NULL,
   `ADDRESS_2` VARCHAR(100) NULL DEFAULT NULL,
   `ADDRESS_3` VARCHAR(100) NULL DEFAULT NULL,
@@ -31,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `moviemadness`.`billingaddress` (
   `ZIP` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`BILLING_ID`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 14
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -48,6 +50,7 @@ CREATE TABLE IF NOT EXISTS `moviemadness`.`mailingaddress` (
   `ZIP` VARCHAR(5) NOT NULL,
   PRIMARY KEY (`MAILING_ID`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 17
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -56,7 +59,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `moviemadness`.`movie` (
   `MOVIE_ID` INT(11) NOT NULL AUTO_INCREMENT,
-  `NAME` VARCHAR(20) NOT NULL,
+  `NAME` VARCHAR(100) NOT NULL,
   `PURCHASE_PRICE` FLOAT NOT NULL,
   `RENT_PRICE` FLOAT NOT NULL,
   `GENRE` VARCHAR(25) NOT NULL,
@@ -65,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `moviemadness`.`movie` (
   PRIMARY KEY (`MOVIE_ID`),
   UNIQUE INDEX `NAME_UNIQUE` (`NAME`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 12
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -74,9 +78,10 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `moviemadness`.`payment` (
   `CARD_ID` INT(11) NOT NULL AUTO_INCREMENT,
   `CARD_NUMBER` VARCHAR(16) NOT NULL,
+  `NAME` VARCHAR(100) NOT NULL,
   `EXPIRATION` DATE NOT NULL,
   `CCV` VARCHAR(3) NOT NULL,
-  `BILLING_ADDRESS` INT(11) NOT NULL,
+  `BILLING_ADDRESS` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`CARD_ID`),
   UNIQUE INDEX `CARD_NUMBER_UNIQUE` (`CARD_NUMBER`),
   INDEX `Billing_Address_idx` (`BILLING_ADDRESS`),
@@ -86,6 +91,7 @@ CREATE TABLE IF NOT EXISTS `moviemadness`.`payment` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -116,6 +122,7 @@ CREATE TABLE IF NOT EXISTS `moviemadness`.`user` (
     ON DELETE CASCADE
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 17
 DEFAULT CHARACTER SET = utf8;
 
 
