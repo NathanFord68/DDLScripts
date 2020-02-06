@@ -1,0 +1,19 @@
+CREATE DATABASE `weatherboi`;
+
+create table `data` ( 
+	`DATA_ID` BIGINT NOT NULL AUTO_INCREMENT,
+    `DATE` TIMESTAMP NOT NULL DEFAULT current_timestamp,
+    `TEMP` FLOAT NOT NULL,
+    `PRESS` FLOAT NOT NULL,
+    `HUMID` FLOAT NOT NULL,
+    PRIMARY KEY(`DATA_ID`)
+);
+
+Create table `user` (
+	`USER_ID` BIGINT NOT NULL auto_increment,
+    `FIRST_NAME` VARCHAR(45),
+    `LAST_NAME` VARCHAR(45),
+	`USER_NAME` VARCHAR(20) NOT NULL,
+    `PASSWORD` VARCHAR(64) NOT NULL,
+    PRIMARY KEY(`USER_ID`)
+);

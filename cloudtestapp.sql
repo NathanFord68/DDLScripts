@@ -19,8 +19,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `cloudtestapp`
 --
-DROP DATABASE IF EXISTS `cloudtestapp`;
-CREATE SCHEMA `cloudtestapp`;
+CREATE DATABASE `cloudtestapp`;
+USE `cloudtestapp`;
+
 -- --------------------------------------------------------
 
 --
