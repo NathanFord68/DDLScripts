@@ -175,12 +175,12 @@ DROP TABLE IF EXISTS `suspension`;
 CREATE TABLE IF NOT EXISTS `suspension`(
 
 	/* Supsenion ID */
-	suspension_id 	BIGINT(20) 	NOT NULL	PRIMARY KEY 	AUTO_INCREMENT
+	suspension_id 	BIGINT 		NOT NULL	PRIMARY KEY 	AUTO_INCREMENT
 		COMMENT 'Primary key'
 	,
 	
 	/* User ID */
-	user_id 		BIGINT(20) 	NOT NULL	UNIQUE
+	user_id 		BIGINT 		NOT NULL	UNIQUE
 		COMMENT 'Foreign key reference to user.user_id'
 	,
 	
@@ -204,6 +204,176 @@ CREATE TABLE IF NOT EXISTS `suspension`(
 	CHARACTER SET 	= utf8
 	COLLATE			= utf8_general_ci
 ;
+
+/* CREATE TABLE: user_education_hx_item */
+DROP TABLE IF EXISTS user_education_hx_item;
+CREATE TABLE IF NOT EXISTS user_education_hx_item(
+	
+	/* Education History Item ID */
+	edu_hx_item_id	BIGINT 			PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* User ID */
+	user_id 		BIGINT			NOT NULL
+		COMMENT 'Foreign key reference to user.user_id. The user who this education item belongs to'
+	,
+	
+	/* School Name */
+	school_name		VARCHAR(75)		NOT NULL
+		COMMENT 'The name of the school the user attended'
+		CHECK (school_name <> '')
+	,
+	
+	/* Degree (Optional) */
+	degree			VARCHAR(75)
+		COMMENT '(Optional) The name of the degree the user was awarded at said school, if applicable'
+	,
+	
+	/* Start Year */
+	start_yr		YEAR			NOT NULL
+		COMMENT '(Required) The year the user started attending said school'
+	,
+	
+	/* End Year */
+	end_yr			YEAR
+		COMMENT 'The year the user stopped attending said school or graduated. If this field is blank, then it is assumed that the user is still attending school here'
+		CHECK (end_yr > start_yr)
+	,
+	
+	/* INDEXES */
+	INDEX idx_user_edu_chron (user_id, start_yr)
+	,
+	
+	INDEX idx_schools (school_name)
+	,
+	
+	INDEX idx_degrees (degree)
+	,
+	
+	INDEX idx_school_degrees (school_name, degree)
+	,
+	
+	/* FOREIGN KEY CONSTRAINTS */
+	CONSTRAINT user_education_hx_item_fk_user FOREIGN KEY (user_id)
+		REFERENCES `user`(user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION
+)
+	ENGINE = InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
+
+/* CREATE TABLE: user_job_hx_item */
+DROP TABLE IF EXISTS user_job_hx_item;
+CREATE TABLE IF NOT EXISTS user_job_hx_item(
+	
+	/* Job History Item ID */
+	job_hx_item_id 	BIGINT			PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* User ID */
+	user_id			BIGINT			NOT NULL
+		COMMENT 'Foreign key reference to user.user_id. The user who this job item belongs to'
+	,
+	
+	/* Employer Name */
+	employer_name	VARCHAR(75)		NOT NULL
+		COMMENT 'The name of the company who employed the user'
+		CHECK (employer_name <> '')
+	,
+	
+	/* Job Title */
+	job_title		VARCHAR(50)		NOT NULL
+		COMMENT 'The job title the user held while working for said company'
+		CHECK (job_title <> '')
+	,
+	
+	/* Start Year */
+	start_yr		YEAR			NOT NULL
+		COMMENT 'The year the user started working at said company'
+	,
+	
+	/* Start Month */
+	start_mo		TINYINT
+		COMMENT '(Optional) The month the user started working at said company, if known'
+		CHECK (start_mo BETWEEN 1 AND 12)
+	,
+	
+	/* End Year */
+	end_yr			YEAR
+		COMMENT '(Optional) The year the user stopped working at said company. If this field is null, then it is assumed the user is still working here'
+		CHECK (end_yr > start_yr)
+	,
+	
+	/* End Month */
+	end_mo			TINYINT
+		COMMENT '(Optional) The month the user stopped working at said company, if known.'
+		CHECK (end_mo BETWEEN 1 AND 12)
+	,
+	
+	/* INDEXES */
+	INDEX idx_user_job_chron (user_id, start_yr)
+	,
+	
+	INDEX idx_employers (employer_name)
+	,
+	
+	INDEX idx_job_titles (job_title)
+	,
+	
+	INDEX idx_employer_titles (employer_name, job_title)
+	,
+	
+	/* FOREIGN KEY CONSTRAINTS */
+	CONSTRAINT user_job_hx_item_fk_user FOREIGN KEY (user_id)
+		REFERENCES `user`(user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION	
+)
+	ENGINE = InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
+
+/* CREATE TABLE: user_education_hx_item */
+DROP TABLE IF EXISTS user_skill;
+CREATE TABLE IF NOT EXISTS user_skill(
+	
+	/* User Skill ID */
+	user_skill_id	BIGINT			PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* User ID */
+	user_id			BIGINT			NOT NULL
+		COMMENT 'Foreign key reference to user.user_id. The user who this skill belongs to'
+	,
+	
+	/* Skill Description */
+	skill_desc		VARCHAR(50)		NOT NULL
+		COMMENT 'The name/description of the skill'
+	,
+	
+	/* UNIQUE CONSTRAINTS */
+	CONSTRAINT uq_user_skill UNIQUE (user_id, skill_desc)
+	,
+	
+	/* FOREIGN KEY CONSTRAINTS */
+	CONSTRAINT user_skill_fk_user FOREIGN KEY (user_id)
+		REFERENCES `user`(user_id)
+		ON DELETE NO ACTION
+		ON UPDATE NO ACTION	
+)
+	ENGINE = InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
+
+/* =========================== VIEWS ============================= */
+/* --------------------------------------------------------------- */
 
 /* View: get_profile */
 CREATE OR REPLACE VIEW get_profile AS 
