@@ -355,6 +355,7 @@ CREATE TABLE IF NOT EXISTS user_skill(
 	/* Skill Description */
 	skill_desc		VARCHAR(50)		NOT NULL
 		COMMENT 'The name/description of the skill'
+		CHECK (skill_desc <> '')
 	,
 	
 	/* UNIQUE CONSTRAINTS */
@@ -366,6 +367,42 @@ CREATE TABLE IF NOT EXISTS user_skill(
 		REFERENCES `user`(user_id)
 		ON DELETE NO ACTION
 		ON UPDATE NO ACTION	
+)
+	ENGINE = InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
+
+/* CREATE TABLE: job_post */
+DROP TABLE IF EXISTS job_post;
+CREATE TABLE IF NOT EXISTS job_post(
+	
+	/* Job Post ID */
+	job_post_id		INT				PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* Timestamp */
+	time_created	TIMESTAMP		NOT NULL 		DEFAULT CURRENT_TIMESTAMP
+		COMMENT 'The date and time the post was created'
+	,
+	
+	/* Company ID -- TODO: Implement later */
+	company_id		INT
+		COMMENT 'The company who posted the job'
+	,
+	
+	/* Job Post Title */
+	title			VARCHAR(60)		NOT NULL
+		COMMENT 'The title of the job posting (not to be confused with the job title)'
+		CHECK (title <> '')
+	,
+	
+	/* Job Description */
+	job_description	TEXT
+		COMMENT 'The full description of the job and all its responsibilities'
+	
+	/* FOREIGN KEY CONSTRAINTS -- TODO: Implement later */
 )
 	ENGINE = InnoDB
 	CHARACTER SET 	= utf8
