@@ -409,6 +409,45 @@ CREATE TABLE IF NOT EXISTS job_post(
 	COLLATE			= utf8_general_ci
 ;
 
+
+#########################################################################
+#These tables have not been peer revied, delete comment upon peer review#
+#########################################################################
+CREATE TABLE `igspacebook`.`affinity_group`(
+	`affinity_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `owner` INT NOT NULL,
+    `affinity_name` VARCHAR(100) NOT NULL,
+    `affinity_description` TEXT NOT NULL,
+    
+    CONSTRAINT affinity_fk_affinity_user FOREIGN KEY (`owner`)
+		REFERENCES `user`(`user_id`)
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE `igspacebook`.`affinity_posts`(
+	`affinity_posts_id` INT NOT NULL PRIMARY KEY auto_increment,
+    `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `details` TEXT NOT NULL,
+    `image_url` VARCHAR(200)
+);
+
+
+
+create table `igspacebook`.`affinity_posts_bridge`(
+	`apb_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `affinity_posts_id` INT NOT NULL,
+    `affinity_group_id` INT NOT NULL,
+    
+    CONSTRAINT apb_fk_apb_group FOREIGN KEY (`affinity_group_id`)
+		REFERENCES `affinity_group`(`affinity_id`)
+        ON UPDATE CASCADE,
+        
+	CONSTRAINT apb_fk_apb_post FOREIGN KEY (`affinity_posts_id`)
+	REFERENCES `affinity_posts`(`affinity_posts_id`)
+	ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
+
 /* =========================== VIEWS ============================= */
 /* --------------------------------------------------------------- */
 

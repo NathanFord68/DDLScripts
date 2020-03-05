@@ -1,4 +1,5 @@
 CREATE DATABASE `weatherboi`;
+use `weatherboi`;
 
 create table `data` ( 
 	`DATA_ID` BIGINT NOT NULL AUTO_INCREMENT,
