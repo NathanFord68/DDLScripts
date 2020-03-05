@@ -409,44 +409,119 @@ CREATE TABLE IF NOT EXISTS job_post(
 	COLLATE			= utf8_general_ci
 ;
 
-
-#########################################################################
-#These tables have not been peer revied, delete comment upon peer review#
-#########################################################################
-CREATE TABLE `igspacebook`.`affinity_group`(
-	`affinity_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `owner` INT NOT NULL,
-    `affinity_name` VARCHAR(100) NOT NULL,
-    `affinity_description` TEXT NOT NULL,
+/* CREATE TABLE: affinity_group */
+DROP TABLE IF EXISTS `affinity_group`;
+CREATE TABLE `affinity_group`
+(
+	/* AFFINITY ID */
+	`affinity_grp_id` 	INT 			PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* USER ID (OWNER) */
+    `user_id` 			BIGINT 			NOT NULL
+		COMMENT "Foreign key reference to user.user_id. The owner/creator of the affinity group"
+	,
+	
+	/* GROUP NAME */
+    `group_name` 		VARCHAR(75) 	NOT NULL		UNIQUE
+		COMMENT 'The name of the affinity group'
+	,
+	
+	/* GROUP DESCRIPTION */
+    `group_desc` 		VARCHAR(150) 	NOT NULL
+		COMMENT 'The description of the affinity group'
+	,
     
-    CONSTRAINT affinity_fk_affinity_user FOREIGN KEY (`owner`)
+	/* FOREIGN KEYS */
+    CONSTRAINT affinity_grp_fk_user FOREIGN KEY (`user_id`)
 		REFERENCES `user`(`user_id`)
         ON UPDATE CASCADE
-);
+)
+	ENGINE 			= InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
 
-CREATE TABLE `igspacebook`.`affinity_posts`(
-	`affinity_posts_id` INT NOT NULL PRIMARY KEY auto_increment,
-    `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `details` TEXT NOT NULL,
-    `image_url` VARCHAR(200)
-);
+/* CREATE TABLE: affinity_group_member` */
+DROP TABLE IF EXISTS `affinity_group_member`;
+CREATE TABLE `affinity_group_member`(
 
+	/* Affinity Group Member ID */
+	`group_member_id`	BIGINT	PRIMARY KEY		AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+	
+	/* User ID (FK) */
+	`user_id`			BIGINT	NOT NULL
+		COMMENT 'Foreign key reference to user.user_id. The ID of the group member (user).'
+	,
+	
+	/* Affinity Group ID (FK) */
+	`affinity_grp_id`	INT		NOT NULL
+		COMMENT 'Foreign key reference to affinity_group.affinity_grp_id'
+	,
+	
+	/* UNIQUE CONSTRAINTS */
+	CONSTRAINT uq_group_user UNIQUE (`user_id`, `affinity_grp_id`)
+	,
+	
+	/* FOREIGN KEYS */
+	CONSTRAINT affinity_grp_member_fk_user FOREIGN KEY (`user_id`)
+		REFERENCES `user`(`user_id`)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+	,
+	
+	CONSTRAINT affinity_grp_member_fk_affinity_grp FOREIGN KEY (`affinity_grp_id`)
+		REFERENCES `affinity_group`(`affinity_grp_id`)
+		ON UPDATE CASCADE
+		ON DELETE CASCADE
+)
+	ENGINE 			= InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
 
+/* CREATE TABLE: affinity_post */
+DROP TABLE IF EXISTS `affinity_post`;
+CREATE TABLE `affinity_post`(
 
-create table `igspacebook`.`affinity_posts_bridge`(
-	`apb_id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    `affinity_posts_id` INT NOT NULL,
-    `affinity_group_id` INT NOT NULL,
-    
-    CONSTRAINT apb_fk_apb_group FOREIGN KEY (`affinity_group_id`)
-		REFERENCES `affinity_group`(`affinity_id`)
-        ON UPDATE CASCADE,
-        
-	CONSTRAINT apb_fk_apb_post FOREIGN KEY (`affinity_posts_id`)
-	REFERENCES `affinity_posts`(`affinity_posts_id`)
-	ON UPDATE CASCADE
-    ON DELETE CASCADE
-);
+	/* Affinty Post ID */
+	`affinity_post_id` 	BIGINT 		PRIMARY KEY 	AUTO_INCREMENT
+		COMMENT 'Primary key'
+	,
+
+	/* Date Posted */
+    `date_posted` 		TIMESTAMP 	NOT NULL 		DEFAULT CURRENT_TIMESTAMP
+		COMMENT 'The date & time of the post'
+	,
+
+	/* Associated Affinity Group (FK) */
+	`affinity_group_id`	INT			NOT NULL
+		COMMENT 'Foreign key reference to affinity_group.affinity_group_id. The associated affinity group for this post'
+	,
+
+	/* Post Title */
+	`post_title` 		VARCHAR(75)	NOT NULL
+		COMMENT 'The title of the post'
+		CHECK (`post_title` <> '')
+	,
+
+	/* Post Content */
+    `post_content` 		TEXT 		NOT NULL
+		COMMENT 'The content of the post as HTML'
+		CHECK (`post_content` <> '')
+	,
+
+	/* Post Cover Image */
+    `post_cover_img` 	BLOB
+		COMMENT '(Optional) A photo that represents the post and will serve as its cover image'
+)
+	ENGINE 			= InnoDB
+	CHARACTER SET 	= utf8
+	COLLATE			= utf8_general_ci
+;
 
 /* =========================== VIEWS ============================= */
 /* --------------------------------------------------------------- */
