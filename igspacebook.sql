@@ -433,6 +433,11 @@ CREATE TABLE `affinity_group`
 		COMMENT 'The description of the affinity group'
 	,
     
+    /* GROUP IMAGE */
+    `group_image`		BLOB
+		COMMENT 'The image associated with the group'
+	,
+    
 	/* FOREIGN KEYS */
     CONSTRAINT affinity_grp_fk_user FOREIGN KEY (`user_id`)
 		REFERENCES `user`(`user_id`)
