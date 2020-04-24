@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS user_profile(
 	,
 	
 	/* Profile Photo */
-	profile_photo	BLOB
+	profile_photo	MEDIUMBLOB
 		COMMENT '(Optional) A photo of the user'
 	,
 	
@@ -434,7 +434,7 @@ CREATE TABLE `affinity_group`
 	,
     
     /* GROUP IMAGE */
-    `group_image`		BLOB
+    `group_image`		MEDIUMBLOB
 		COMMENT 'The image associated with the group'
 	,
     
